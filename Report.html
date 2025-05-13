@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .logo-block img { width: 100px; }
+        .user-info { font-size: 11px; margin-left: 10px; }
+        .right-header { text-align: right; font-size: 10px; }
+        h2 { margin: 10px 0 5px; }
+        .unit-section { page-break-after: always; }
+        .currency-pair-header { background: #f0f0f0; padding: 5px; font-weight: bold; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 5px; text-align: left; }
+        .subtotal-row { background-color: #f9f9f9; font-weight: bold; }
+        @page { size: auto; margin: 20mm; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-block">
+            <img src="sample_logo.png" alt="Logo" />
+        </div>
+        <div class="user-info">
+            <div>{{ user_info.name }}</div>
+            <div>{{ user_info.address }}</div>
+            <div>{{ user_info.telephone }}</div>
+            <div>{{ user_info.email }}</div>
+        </div>
+        <div class="right-header">
+            <div>Page: <span class="pageNumber"></span></div>
+            <div>Generated on: {{ generation_date }}</div>
+        </div>
+    </div>
+
+    {% for section in sections %}
+    <div class="unit-section">
+        <h2>{{ section.report_name }}</h2>
+        <div><strong>Unit Name:</strong> {{ section.unit_name }}</div>
+        <div><strong>Unit ID:</strong> {{ section.unit_id }}</div>
+        <div><strong>Report Date:</strong> {{ section.report_date }}</div>
+
+        {% for group in section.currency_groups %}
+        <div class="currency-pair-header">
+            Currency Pair: {{ group.currency_pair }} | Date Range: {{ group.date_range }}
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    {% for col in group.columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in group.data %}
+                <tr class="{{ 'subtotal-row' if row.is_subtotal else '' }}">
+                    {% for col in group.columns %}
+                    <td>{{ row[col] }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</body>
+</html>
+
