@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .unit-section {
+            margin-top: 20px;
+            page-break-after: always;
+        }
+
+        .currency-group {
+            margin-bottom: 30px;
+            page-break-after: always;
+        }
+
+        .currency-title {
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+
+        .unit-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 4px 6px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr.subtotal {
+            background-color: #e6f7ff;
+            font-weight: bold;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+
+{% for section in sections %}
+    <div class="unit-section">
+        <div class="unit-title">Unit: {{ section.unit_name }} ({{ section.unit_id }})</div>
+
+        {% for group in section.currency_groups %}
+            <div class="currency-group">
+                <div class="currency-title">Currency Pair: {{ group.currency_pair }}</div>
+                <div class="currency-title">Date Range: {{ group.date_range }}</div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            {% for col in group.columns %}
+                                <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in group.data %}
+                            <tr class="{{ 'subtotal' if row.is_subtotal else '' }}">
+                                {% for col in group.columns %}
+                                    <td>{{ row[col] }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+</body>
+</html>
